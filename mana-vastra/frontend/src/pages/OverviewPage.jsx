@@ -1,4 +1,13 @@
 import { useEffect, useState } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import api from "@/api/client";
 import PageHeader from "@/components/PageHeader";
 import StatCard from "@/components/StatCard";
@@ -21,8 +30,6 @@ export default function OverviewPage() {
     api.get("/inventory/stats").then(({ data }) => setStats(data));
   }, []);
 
-  const maxSoldCount = Math.max(...stats.monthlyTrend.map((item) => item.soldCount), 1);
-
   return (
     <div className="space-y-6">
       <PageHeader
@@ -44,26 +51,52 @@ export default function OverviewPage() {
             <CardTitle>This month sales trend</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex h-72 items-end gap-3">
-              {stats.monthlyTrend.length ? (
-                stats.monthlyTrend.map((item) => (
-                  <div key={item.day} className="flex flex-1 flex-col items-center gap-3">
-                    <div
-                      className="w-full rounded-t-2xl bg-gradient-to-t from-primary to-[#f1d3a0]"
-                      style={{ height: `${Math.max((item.soldCount / maxSoldCount) * 100, 12)}%` }}
-                    />
-                    <div className="text-center">
-                      <p className="text-sm font-medium text-foreground">{item.soldCount}</p>
-                      <p className="text-xs text-muted">{item.day}</p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="flex h-full w-full items-center justify-center rounded-2xl border border-dashed border-border text-sm text-muted">
-                  No sarees marked sold this month yet.
-                </div>
-              )}
-            </div>
+            {stats.monthlyTrend.length ? (
+              <ResponsiveContainer width="100%" height={288}>
+                <BarChart
+                  data={stats.monthlyTrend}
+                  margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+                  barCategoryGap="30%"
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2118" vertical={false} />
+                  <XAxis
+                    dataKey="day"
+                    tick={{ fill: "#9c8a72", fontSize: 12 }}
+                    axisLine={false}
+                    tickLine={false}
+                    tickFormatter={(d) => `${parseInt(d, 10)}`}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={{ fill: "#9c8a72", fontSize: 12 }}
+                    axisLine={false}
+                    tickLine={false}
+                    width={28}
+                  />
+                  <Tooltip
+                    cursor={{ fill: "rgba(193,149,84,0.08)" }}
+                    contentStyle={{
+                      background: "#120f0c",
+                      border: "1px solid #2a2118",
+                      borderRadius: "12px",
+                      color: "#f5ede0",
+                      fontSize: 13,
+                    }}
+                    formatter={(value, name) =>
+                      name === "revenue"
+                        ? [formatCurrency(value), "Revenue"]
+                        : [value, "Sarees sold"]
+                    }
+                    labelFormatter={(label) => `Day ${parseInt(label, 10)}`}
+                  />
+                  <Bar dataKey="soldCount" name="soldCount" fill="#c19554" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex h-72 items-center justify-center rounded-2xl border border-dashed border-border text-sm text-muted">
+                No sarees marked sold this month yet.
+              </div>
+            )}
           </CardContent>
         </Card>
 

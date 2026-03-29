@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CheckCheck, Eye, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Minus, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import api from "@/api/client";
 import PageHeader from "@/components/PageHeader";
 import AddSareeModal from "@/components/AddSareeModal";
@@ -35,7 +35,6 @@ export default function InventoryPage() {
     if (search) params.search = search;
     if (category !== "All Categories") params.category = category;
     if (statusFilter !== "all") params.inventoryStatus = statusFilter;
-
     const { data } = await api.get("/inventory", { params });
     setItems(data);
   };
@@ -45,21 +44,18 @@ export default function InventoryPage() {
   }, [search, category, statusFilter]);
 
   const deleteItem = async (id) => {
-    if (!window.confirm("Delete this saree?")) {
-      return;
-    }
-
+    if (!window.confirm("Delete this saree?")) return;
     await api.delete(`/inventory/${id}`);
     loadInventory();
   };
 
-  const toggleAvailability = async (id) => {
+  const toggleVisibility = async (id) => {
     await api.patch(`/inventory/${id}/toggle`);
     loadInventory();
   };
 
-  const updateInventoryStatus = async (id, inventoryStatus) => {
-    await api.patch(`/inventory/${id}/status`, { inventoryStatus });
+  const adjustStock = async (id, action) => {
+    await api.patch(`/inventory/${id}/stock`, { action });
     loadInventory();
   };
 
@@ -75,12 +71,7 @@ export default function InventoryPage() {
         description="Add new arrivals, adjust pricing, update stock, and keep the live website inventory in sync."
         actions={
           user?.role === "admin" ? (
-            <Button
-              onClick={() => {
-                setSelected(null);
-                setModalOpen(true);
-              }}
-            >
+            <Button onClick={() => { setSelected(null); setModalOpen(true); }}>
               <Plus size={16} className="mr-2" />
               Add Saree
             </Button>
@@ -106,9 +97,7 @@ export default function InventoryPage() {
               onChange={(e) => setCategory(e.target.value)}
             >
               {categories.map((entry) => (
-                <option key={entry} value={entry}>
-                  {entry}
-                </option>
+                <option key={entry} value={entry}>{entry}</option>
               ))}
             </select>
             <select
@@ -118,13 +107,13 @@ export default function InventoryPage() {
             >
               <option value="all">All Status</option>
               <option value="in_stock">In Stock</option>
-              <option value="sold">Sold</option>
+              <option value="sold">Sold Out</option>
             </select>
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
             <div className="rounded-2xl border border-border bg-[#120f0c] p-4">
-              <p className="text-sm text-muted">Visible inventory</p>
+              <p className="text-sm text-muted">Total items</p>
               <p className="mt-2 text-3xl font-semibold text-foreground">{totalCount}</p>
             </div>
             <div className="rounded-2xl border border-border bg-[#120f0c] p-4">
@@ -132,7 +121,7 @@ export default function InventoryPage() {
               <p className="mt-2 text-3xl font-semibold text-primary">{inStockCount}</p>
             </div>
             <div className="rounded-2xl border border-border bg-[#120f0c] p-4">
-              <p className="text-sm text-muted">Sold</p>
+              <p className="text-sm text-muted">Sold out</p>
               <p className="mt-2 text-3xl font-semibold text-primary">{soldCount}</p>
             </div>
           </div>
@@ -145,7 +134,7 @@ export default function InventoryPage() {
                   <th className="px-4 py-3 font-medium">Category</th>
                   <th className="px-4 py-3 font-medium">Price</th>
                   <th className="px-4 py-3 font-medium">Stock</th>
-                  <th className="px-4 py-3 font-medium">Inventory</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
                   {user?.role === "admin" ? <th className="px-4 py-3 font-medium">Actions</th> : null}
                 </tr>
               </thead>
@@ -167,11 +156,34 @@ export default function InventoryPage() {
                     </td>
                     <td className="px-4 py-4">{item.category}</td>
                     <td className="px-4 py-4">{formatCurrency(item.salePrice || item.price)}</td>
-                    <td className="px-4 py-4">{item.stock}</td>
+                    <td className="px-4 py-4">
+                      {user?.role === "admin" ? (
+                        <div className="flex items-center gap-2">
+                          <button
+                            title="Remove 1 from stock"
+                            disabled={item.stock <= 0}
+                            onClick={() => adjustStock(item._id, "decrement")}
+                            className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-[#120f0c] text-muted transition hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-30"
+                          >
+                            <Minus size={12} />
+                          </button>
+                          <span className="w-6 text-center font-medium text-foreground">{item.stock}</span>
+                          <button
+                            title="Add 1 to stock"
+                            onClick={() => adjustStock(item._id, "increment")}
+                            className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-[#120f0c] text-muted transition hover:border-primary hover:text-primary"
+                          >
+                            <Plus size={12} />
+                          </button>
+                        </div>
+                      ) : (
+                        <span>{item.stock}</span>
+                      )}
+                    </td>
                     <td className="px-4 py-4">
                       <div className="flex flex-wrap gap-2">
                         <Badge tone={item.inventoryStatus === "sold" ? "danger" : "success"}>
-                          {item.inventoryStatus === "sold" ? "Sold" : "In Stock"}
+                          {item.inventoryStatus === "sold" ? "Sold Out" : "In Stock"}
                         </Badge>
                         <Badge tone={item.available ? "success" : "warning"}>
                           {item.available ? "Visible" : "Hidden"}
@@ -180,42 +192,43 @@ export default function InventoryPage() {
                     </td>
                     {user?.role === "admin" ? (
                       <td className="px-4 py-4">
-                        <div className="flex gap-2">
-                          <Button variant="ghost" onClick={() => toggleAvailability(item._id)}>
-                            <Eye size={16} />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            onClick={() =>
-                              updateInventoryStatus(
-                                item._id,
-                                item.inventoryStatus === "sold" ? "in_stock" : "sold"
-                              )
-                            }
+                        <div className="flex items-center gap-1">
+                          <button
+                            title={item.available ? "Hide from website" : "Show on website"}
+                            onClick={() => toggleVisibility(item._id)}
+                            className="flex items-center gap-1.5 rounded-lg border border-border bg-[#120f0c] px-3 py-1.5 text-xs text-muted transition hover:border-primary hover:text-primary"
                           >
-                            <CheckCheck size={16} />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            onClick={() => {
-                              setSelected(item);
-                              setModalOpen(true);
-                            }}
+                            {item.available ? <EyeOff size={13} /> : <Eye size={13} />}
+                            {item.available ? "Hide" : "Show"}
+                          </button>
+                          <button
+                            title="Edit saree"
+                            onClick={() => { setSelected(item); setModalOpen(true); }}
+                            className="flex items-center gap-1.5 rounded-lg border border-border bg-[#120f0c] px-3 py-1.5 text-xs text-muted transition hover:border-primary hover:text-primary"
                           >
-                            <Pencil size={16} />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            className="text-danger"
+                            <Pencil size={13} />
+                            Edit
+                          </button>
+                          <button
+                            title="Delete saree"
                             onClick={() => deleteItem(item._id)}
+                            className="flex items-center gap-1.5 rounded-lg border border-border bg-[#120f0c] px-3 py-1.5 text-xs text-red-400 transition hover:border-red-400"
                           >
-                            <Trash2 size={16} />
-                          </Button>
+                            <Trash2 size={13} />
+                            Delete
+                          </button>
                         </div>
                       </td>
                     ) : null}
                   </tr>
                 ))}
+                {!items.length && (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-12 text-center text-sm text-muted">
+                      No sarees found.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

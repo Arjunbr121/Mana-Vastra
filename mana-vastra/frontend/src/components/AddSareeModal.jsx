@@ -169,21 +169,6 @@ export default function AddSareeModal({ open, onOpenChange, onSaved, initialData
             value={form.stock}
             onChange={(e) => setValue("stock", e.target.value)}
           />
-          <select
-            className="w-full rounded-xl border border-border bg-[#120f0c] px-4 py-3 text-sm text-foreground"
-            value={form.inventoryStatus}
-            onChange={(e) => {
-              const inventoryStatus = e.target.value;
-              setForm((current) => ({
-                ...current,
-                inventoryStatus,
-                available: inventoryStatus === "in_stock",
-              }));
-            }}
-          >
-            <option value="in_stock">In Stock</option>
-            <option value="sold">Sold</option>
-          </select>
           <Input placeholder="Tags (comma separated)" value={form.tags} onChange={(e) => setValue("tags", e.target.value)} />
         </div>
 

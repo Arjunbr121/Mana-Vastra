@@ -1,52 +1,41 @@
 import multer from "multer";
-import cloudinary, { isCloudinaryConfigured } from "../config/cloudinary.js";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
-const storage = multer.memoryStorage();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const uploadsDir = path.join(__dirname, "../../../uploads");
 
-export const upload = multer({
-  storage,
-  limits: {
-    files: 5,
-    fileSize: 5 * 1024 * 1024,
+// Ensure uploads directory exists
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, uploadsDir),
+  filename: (_req, file, cb) => {
+    const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    cb(null, `${unique}${path.extname(file.originalname)}`);
   },
 });
 
-const toDataUri = (file) =>
-  `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+export const upload = multer({
+  storage,
+  limits: { files: 5, fileSize: 5 * 1024 * 1024 },
+});
 
-export const uploadImagesToCloudinary = async (files = []) => {
-  if (!files.length) {
-    return [];
-  }
-
-  if (!isCloudinaryConfigured) {
-    throw new Error("Cloudinary is not configured in backend/.env");
-  }
-
-  const uploads = files.map(async (file) => {
-    const response = await cloudinary.uploader.upload(toDataUri(file), {
-      folder: "mana-vastra",
-      transformation: [{ width: 800, crop: "limit", quality: "auto:good" }],
-    });
-
-    return {
-      publicId: response.public_id,
-      url: response.secure_url,
-    };
-  });
-
-  return Promise.all(uploads);
+export const uploadImages = (files = []) => {
+  return files.map((file) => ({
+    url: `/uploads/${file.filename}`,
+  }));
 };
 
-export const deleteCloudinaryImages = async (images = []) => {
-  if (!isCloudinaryConfigured) {
-    return;
+export const deleteLocalImages = (images = []) => {
+  for (const image of images) {
+    if (!image?.url) continue;
+    const filePath = path.join(uploadsDir, path.basename(image.url));
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
   }
-
-  const publicIds = images.map((image) => image.publicId).filter(Boolean);
-  if (!publicIds.length) {
-    return;
-  }
-
-  await Promise.all(publicIds.map((publicId) => cloudinary.uploader.destroy(publicId)));
 };

@@ -1,7 +1,7 @@
 import express from "express";
 import { getDb } from "../config/db.js";
 import { protect, requireAdmin } from "../middleware/auth.js";
-import { deleteCloudinaryImages, upload, uploadImagesToCloudinary } from "../utils/upload.js";
+import { deleteLocalImages, upload, uploadImages } from "../utils/upload.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 const router = express.Router();
@@ -182,9 +182,13 @@ router.get("/:id", asyncHandler(async (req, res) => {
 
 router.post("/", protect, requireAdmin, upload.array("images", 5), asyncHandler(async (req, res) => {
   const db = getDb();
-  const uploadedImages = await uploadImagesToCloudinary(req.files || []);
+  const uploadedImages = uploadImages(req.files || []);
   const existingImages = parseExistingImages(req.body.existingImages);
   const images = [...existingImages, ...uploadedImages].slice(0, 5);
+
+  const stock = Number(req.body.stock || 0);
+  const inventoryStatus = stock > 0 ? "in_stock" : "sold";
+  const soldAt = inventoryStatus === "sold" ? new Date().toISOString() : null;
 
   const result = await db.run(
     `INSERT INTO sarees
@@ -200,10 +204,10 @@ router.post("/", protect, requireAdmin, upload.array("images", 5), asyncHandler(
       req.body.occasion || "",
       Number(req.body.price),
       req.body.salePrice ? Number(req.body.salePrice) : null,
-      Number(req.body.stock || 0),
-      req.body.available !== "false" ? 1 : 0,
-      req.body.inventoryStatus || "in_stock",
-      req.body.inventoryStatus === "sold" ? req.body.soldAt || new Date().toISOString() : null,
+      stock,
+      inventoryStatus === "in_stock" ? 1 : 0,
+      inventoryStatus,
+      soldAt,
       req.body.featured === "true" ? 1 : 0,
       JSON.stringify(parseArray(req.body.tags)),
       JSON.stringify(images),
@@ -226,8 +230,14 @@ router.patch("/:id", protect, requireAdmin, upload.array("images", 5), asyncHand
     (storedImage) => !existingImages.some((existingImage) => existingImage.url === storedImage.url)
   );
 
-  const uploadedImages = await uploadImagesToCloudinary(req.files || []);
+  const uploadedImages = uploadImages(req.files || []);
   const images = [...existingImages, ...uploadedImages].slice(0, 5);
+
+  const stock = Number(req.body.stock ?? saree.stock);
+  const inventoryStatus = stock > 0 ? "in_stock" : "sold";
+  const soldAt = inventoryStatus === "sold"
+    ? (saree.soldAt || new Date().toISOString())
+    : null;
 
   await db.run(
     `UPDATE sarees
@@ -245,28 +255,29 @@ router.patch("/:id", protect, requireAdmin, upload.array("images", 5), asyncHand
       req.body.occasion || "",
       Number(req.body.price),
       req.body.salePrice ? Number(req.body.salePrice) : null,
-      Number(req.body.stock || 0),
-      req.body.available !== "false" ? 1 : 0,
-      req.body.inventoryStatus || "in_stock",
-      req.body.inventoryStatus === "sold" ? req.body.soldAt || saree.soldAt || new Date().toISOString() : null,
+      stock,
+      inventoryStatus === "in_stock" ? 1 : 0,
+      inventoryStatus,
+      soldAt,
       req.body.featured === "true" ? 1 : 0,
       JSON.stringify(parseArray(req.body.tags)),
       JSON.stringify(images),
       req.params.id,
     ]
   );
-  await deleteCloudinaryImages(removedImages);
+  await deleteLocalImages(removedImages);
 
   const updatedRow = await db.get("SELECT * FROM sarees WHERE id = ?", [req.params.id]);
   res.json(mapSaree(updatedRow));
 }));
 
-router.patch("/:id/status", protect, requireAdmin, asyncHandler(async (req, res) => {
+// Increment or decrement stock by 1. Status is auto-derived from resulting stock.
+router.patch("/:id/stock", protect, requireAdmin, asyncHandler(async (req, res) => {
   const db = getDb();
-  const { inventoryStatus } = req.body;
+  const { action } = req.body; // "increment" | "decrement"
 
-  if (!["in_stock", "sold"].includes(inventoryStatus)) {
-    return res.status(400).json({ message: "Invalid inventory status" });
+  if (!["increment", "decrement"].includes(action)) {
+    return res.status(400).json({ message: "action must be increment or decrement" });
   }
 
   const row = await db.get("SELECT * FROM sarees WHERE id = ?", [req.params.id]);
@@ -274,21 +285,22 @@ router.patch("/:id/status", protect, requireAdmin, asyncHandler(async (req, res)
     return res.status(404).json({ message: "Saree not found" });
   }
 
-  const soldAt = inventoryStatus === "sold" ? new Date().toISOString() : null;
-  const available = inventoryStatus === "sold" ? 0 : 1;
-  const tags = JSON.parse(row.tags || "[]")
-    .filter((tag) => !["Sold", "In Stock"].includes(tag))
-    .concat(inventoryStatus === "sold" ? ["Sold"] : ["In Stock"]);
+  const newStock = Math.max(0, Number(row.stock) + (action === "increment" ? 1 : -1));
+  const inventoryStatus = newStock > 0 ? "in_stock" : "sold";
+  const soldAt = inventoryStatus === "sold"
+    ? (row.sold_at || new Date().toISOString())
+    : null;
+  const available = inventoryStatus === "in_stock" ? 1 : 0;
 
   await db.run(
     `UPDATE sarees
-     SET inventory_status = ?, sold_at = ?, available = ?, tags = ?, updated_at = CURRENT_TIMESTAMP
+     SET stock = ?, inventory_status = ?, sold_at = ?, available = ?, updated_at = CURRENT_TIMESTAMP
      WHERE id = ?`,
-    [inventoryStatus, soldAt, available, JSON.stringify(tags), req.params.id]
+    [newStock, inventoryStatus, soldAt, available, req.params.id]
   );
 
   const updatedRow = await db.get("SELECT * FROM sarees WHERE id = ?", [req.params.id]);
-  res.json(mapSaree(updatedRow));
+  return res.json(mapSaree(updatedRow));
 }));
 
 router.delete("/:id", protect, requireAdmin, asyncHandler(async (req, res) => {
@@ -299,7 +311,7 @@ router.delete("/:id", protect, requireAdmin, asyncHandler(async (req, res) => {
   }
   const saree = mapSaree(row);
 
-  await deleteCloudinaryImages(saree.images);
+  deleteLocalImages(saree.images);
   await db.run("DELETE FROM sarees WHERE id = ?", [req.params.id]);
   res.json({ message: "Saree deleted" });
 }));

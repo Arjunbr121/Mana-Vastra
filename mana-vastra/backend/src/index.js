@@ -1,7 +1,11 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import { connectDB } from "./config/db.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import authRoutes from "./routes/auth.js";
 import inventoryRoutes from "./routes/inventory.js";
 import orderRoutes from "./routes/orders.js";
@@ -18,6 +22,7 @@ app.use(
 );
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(__dirname, "../../uploads")));
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", app: "mana-vastra-api" });
