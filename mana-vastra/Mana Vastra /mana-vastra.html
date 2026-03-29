@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mana Vastra – Premium Sarees</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #F0D080;
+      --gold-dark: #8B6914;
+      --red: #9B2335;
+      --red-light: #C0392B;
+      --green: #2E6B3E;
+      --green-light: #3D8B50;
+      --black: #0A0705;
+      --dark1: #110E09;
+      --dark2: #1A1510;
+      --dark3: #231D16;
+      --dark4: #2D261C;
+      --cream: #F5EDD6;
+      --cream-dim: #D4C49A;
+      --text-dim: #A08858;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--black);
+      color: var(--cream);
+      font-family: 'EB Garamond', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NOISE TEXTURE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────── */
+    .header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: linear-gradient(180deg, rgba(10,7,5,0.98) 0%, rgba(10,7,5,0.85) 100%);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 80px;
+    }
+    .header-right { justify-content: flex-end; }
+
+    .hamburger-btn {
+      background: none;
+      border: 1px solid rgba(201,168,76,0.35);
+      border-radius: 6px;
+      color: var(--gold);
+      cursor: pointer;
+      padding: 7px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.25s;
+    }
+    .hamburger-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+    .hamburger-btn span {
+      display: block; width: 18px; height: 1.5px;
+      background: var(--gold);
+      transition: all 0.3s;
+    }
+    .hamburger-btn.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .hamburger-btn.open span:nth-child(2) { opacity: 0; }
+    .hamburger-btn.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+    .header-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .logo-icon {
+      width: 38px; height: 38px;
+    }
+
+    .brand-name {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-light) 50%, var(--gold-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+
+    .tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .social-icon {
+      width: 32px; height: 32px;
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold);
+      text-decoration: none;
+      transition: all 0.25s;
+      font-size: 13px;
+    }
+    .social-icon:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.12);
+      transform: scale(1.08);
+    }
+
+    /* ─── MENU DRAWER ─────────────────────────────────── */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 98;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .menu-overlay.open { opacity: 1; pointer-events: all; }
+
+    .menu-drawer {
+      position: fixed;
+      top: 0; left: 0;
+      width: min(280px, 80vw);
+      height: 100vh;
+      background: linear-gradient(160deg, var(--dark1) 0%, var(--dark2) 100%);
+      border-right: 1px solid rgba(201,168,76,0.2);
+      z-index: 99;
+      transform: translateX(-100%);
+      transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+      padding: 80px 0 40px;
+      display: flex;
+      flex-direction: column;
+    }
+    .menu-drawer.open { transform: translateX(0); }
+
+    .menu-header-label {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      color: var(--gold-dark);
+      text-transform: uppercase;
+      padding: 0 28px 16px;
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      margin-bottom: 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 28px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--cream-dim);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .menu-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--gold);
+      transform: scaleY(0);
+      transition: transform 0.2s;
+    }
+    .menu-item:hover, .menu-item.active {
+      color: var(--gold-light);
+      background: rgba(201,168,76,0.06);
+    }
+    .menu-item:hover::before, .menu-item.active::before { transform: scaleY(1); }
+
+    .menu-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); opacity: 0.5; flex-shrink: 0; }
+
+    /* ─── HERO ────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 60px;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(155,35,53,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(46,107,62,0.1) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 50% at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 50%);
+      position: relative;
+    }
+
+    .hero-ornament {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .ornament-line {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+    .ornament-line.right { background: linear-gradient(90deg, var(--gold), transparent); }
+    .ornament-diamond {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg);
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(12px, 2.5vw, 15px);
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(28px, 8vw, 64px);
+      font-weight: 900;
+      line-height: 1.1;
+      background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-light) 40%, var(--gold) 60%, var(--gold-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(14px, 3vw, 20px);
+      font-style: italic;
+      color: var(--cream-dim);
+      letter-spacing: 0.08em;
+      margin-bottom: 48px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark));
+      color: var(--black);
+      border: none;
+      padding: 13px 28px;
+      cursor: pointer;
+      transition: all 0.3s;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.3); }
+
+    .btn-secondary {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 12px 28px;
+      cursor: pointer;
+      transition: all 0.3s;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    }
+    .btn-secondary:hover { background: rgba(201,168,76,0.08); transform: translateY(-2px); }
+
+    /* ─── ANNOUNCEMENT BANNER ─────────────────────────── */
+    .order-banner {
+      background: linear-gradient(135deg, var(--dark2) 0%, var(--dark3) 50%, var(--dark2) 100%);
+      border-top: 1px solid rgba(201,168,76,0.25);
+      border-bottom: 1px solid rgba(201,168,76,0.25);
+      padding: 28px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .order-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 100% at 50% 50%, rgba(155,35,53,0.08) 0%, transparent 70%);
+    }
+
+    .order-banner-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(11px, 3vw, 14px);
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .order-highlight {
+      display: inline-block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(16px, 4vw, 22px);
+      font-weight: 700;
+      color: var(--gold-light);
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 10px 24px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+      letter-spacing: 0.04em;
+    }
+
+    .order-rules {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+    }
+    .order-rule {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(12px, 2.5vw, 14px);
+      color: #C0392B;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .order-rule .x-icon { color: #E74C3C; font-weight: 900; }
+
+    /* ─── SECTION HEADER ──────────────────────────────── */
+    .section {
+      padding: 60px 20px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(18px, 5vw, 30px);
+      color: var(--gold-light);
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .divider-line { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dark)); }
+    .divider-line.right { background: linear-gradient(90deg, var(--gold-dark), transparent); }
+    .divider-gem { font-size: 10px; color: var(--gold); }
+
+    /* ─── CATEGORY FILTER ─────────────────────────────── */
+    .category-filter {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 40px;
+      padding: 0 10px;
+    }
+
+    .cat-btn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 8px 18px;
+      border: 1px solid rgba(201,168,76,0.25);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.25s;
+      border-radius: 2px;
+    }
+    .cat-btn:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(201,168,76,0.06); }
+    .cat-btn.active { border-color: var(--gold); color: var(--black); background: linear-gradient(135deg, var(--gold-dark), var(--gold)); }
+
+    /* ─── SAREE GRID ──────────────────────────────────── */
+    .saree-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 480px) {
+      .saree-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    }
+
+    .saree-card {
+      background: linear-gradient(160deg, var(--dark2) 0%, var(--dark3) 100%);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      cursor: pointer;
+      position: relative;
+    }
+    .saree-card:hover {
+      border-color: rgba(201,168,76,0.45);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.1);
+    }
+
+    .saree-img-wrap {
+      position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: var(--dark4);
+    }
+
+    .saree-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .saree-card:hover .saree-img { transform: scale(1.06); }
+
+    .saree-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      color: var(--black);
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      padding: 3px 8px;
+      border-radius: 1px;
+      text-transform: uppercase;
+    }
+
+    .saree-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(160deg, var(--dark3), var(--dark4));
+    }
+    .saree-placeholder-icon { font-size: 36px; opacity: 0.4; }
+    .saree-placeholder-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .saree-info {
+      padding: 14px 16px 16px;
+      border-top: 1px solid rgba(201,168,76,0.1);
+    }
+
+    .saree-type {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .saree-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .saree-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .saree-price {
+      font-family: 'EB Garamond', serif;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--gold-light);
+    }
+
+    .saree-code {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      background: rgba(201,168,76,0.06);
+      border: 1px solid rgba(201,168,76,0.15);
+      padding: 4px 8px;
+      border-radius: 2px;
+    }
+
+    .saree-order-btn {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--black);
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      border: none;
+      padding: 9px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 1px;
+      text-decoration: none;
+      text-align: center;
+    }
+    .saree-order-btn:hover { opacity: 0.88; }
+
+    /* ─── WHATSAPP FLOATING ───────────────────────────── */
+    .wa-float {
+      position: fixed;
+      bottom: 24px; right: 20px;
+      width: 52px; height: 52px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      text-decoration: none;
+      z-index: 90;
+      transition: all 0.3s;
+      animation: wa-pulse 3s infinite;
+    }
+    .wa-float:hover { transform: scale(1.1); box-shadow: 0 8px 30px rgba(37,211,102,0.5); }
+    @keyframes wa-pulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.4); }
+      50% { box-shadow: 0 4px 30px rgba(37,211,102,0.6), 0 0 0 8px rgba(37,211,102,0.08); }
+    }
+
+    /* ─── ADDRESS SECTION ─────────────────────────────── */
+    .address-section {
+      background: linear-gradient(160deg, var(--dark1) 0%, var(--dark2) 100%);
+      border-top: 1px solid rgba(201,168,76,0.15);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      padding: 60px 20px;
+    }
+
+    .address-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    @media (max-width: 640px) {
+      .address-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+
+    .address-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .address-label {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--gold-dark);
+      text-transform: uppercase;
+    }
+
+    .address-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--cream-dim);
+    }
+
+    .map-embed {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .view-map-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 10px 20px;
+      transition: all 0.25s;
+      border-radius: 2px;
+    }
+    .view-map-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'EB Garamond', serif;
+      font-size: 15px;
+      color: var(--cream-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-item:hover { color: var(--gold-light); }
+    .contact-icon {
+      width: 34px; height: 34px;
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────── */
+    .footer {
+      padding: 32px 20px;
+      text-align: center;
+      border-top: 1px solid rgba(201,168,76,0.1);
+    }
+    .footer-brand {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--gold-dark);
+      margin-bottom: 6px;
+    }
+    .footer-copy {
+      font-family: 'EB Garamond', serif;
+      font-size: 11px;
+      color: rgba(160,136,88,0.5);
+      letter-spacing: 0.08em;
+    }
+
+    /* ─── MODAL ───────────────────────────────────────── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
+
+    .modal-card {
+      background: linear-gradient(160deg, var(--dark2), var(--dark3));
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 4px;
+      max-width: 440px;
+      width: 100%;
+      padding: 32px;
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+      position: relative;
+    }
+    .modal-backdrop.open .modal-card { transform: none; }
+
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      background: none;
+      border: 1px solid rgba(201,168,76,0.25);
+      color: var(--gold);
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+
+    .modal-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .modal-saree-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 20px;
+    }
+
+    .modal-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+      font-family: 'EB Garamond', serif;
+      font-size: 15px;
+      color: var(--cream-dim);
+    }
+    .modal-info-row span:last-child { color: var(--gold-light); font-weight: 600; }
+
+    .modal-instruction {
+      margin-top: 20px;
+      background: rgba(155,35,53,0.1);
+      border: 1px solid rgba(155,35,53,0.25);
+      border-radius: 2px;
+      padding: 14px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--cream-dim);
+      text-align: center;
+    }
+    .modal-instruction strong { color: var(--gold-light); display: block; margin-bottom: 6px; }
+
+    .modal-wa-btn {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 13px;
+      background: #25D366;
+      border: none;
+      border-radius: 2px;
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: white;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .modal-wa-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up { animation: fadeUp 0.7s ease both; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.35s; }
+    .delay-4 { animation-delay: 0.5s; }
+    .delay-5 { animation-delay: 0.65s; }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .shimmer-text {
+      background: linear-gradient(90deg, var(--gold-dark) 0%, var(--gold-light) 25%, var(--gold) 50%, var(--gold-light) 75%, var(--gold-dark) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--text-dim);
+      font-size: 18px;
+      grid-column: 1 / -1;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" id="top">
+  <div class="header-left">
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="header-center">
+    <svg class="logo-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: float 4s ease-in-out infinite">
+      <!-- Butterfly / Paisley Logo -->
+      <ellipse cx="40" cy="40" rx="38" ry="38" fill="none" stroke="url(#goldRing)" stroke-width="1"/>
+      <!-- Left wing -->
+      <path d="M40 40 C20 20, 5 28, 8 44 C11 58, 28 54, 40 40Z" fill="url(#wingL)" opacity="0.9"/>
+      <!-- Right wing -->
+      <path d="M40 40 C60 20, 75 28, 72 44 C69 58, 52 54, 40 40Z" fill="url(#wingR)" opacity="0.9"/>
+      <!-- Lower left -->
+      <path d="M40 40 C22 50, 14 62, 22 70 C30 76, 40 64, 40 40Z" fill="url(#wingBL)" opacity="0.8"/>
+      <!-- Lower right -->
+      <path d="M40 40 C58 50, 66 62, 58 70 C50 76, 40 64, 40 40Z" fill="url(#wingBR)" opacity="0.8"/>
+      <!-- Body -->
+      <ellipse cx="40" cy="42" rx="3.5" ry="8" fill="url(#goldBody)"/>
+      <!-- Center gem -->
+      <circle cx="40" cy="40" r="3" fill="url(#gemGrad)"/>
+      <defs>
+        <linearGradient id="goldRing" x1="0" y1="0" x2="80" y2="80">
+          <stop offset="0%" stop-color="#8B6914"/>
+          <stop offset="50%" stop-color="#F0D080"/>
+          <stop offset="100%" stop-color="#8B6914"/>
+        </linearGradient>
+        <linearGradient id="wingL" x1="8" y1="20" x2="40" y2="55">
+          <stop offset="0%" stop-color="#9B2335"/>
+          <stop offset="100%" stop-color="#C9A84C"/>
+        </linearGradient>
+        <linearGradient id="wingR" x1="72" y1="20" x2="40" y2="55">
+          <stop offset="0%" stop-color="#2E6B3E"/>
+          <stop offset="100%" stop-color="#C9A84C"/>
+        </linearGradient>
+        <linearGradient id="wingBL" x1="14" y1="55" x2="40" y2="76">
+          <stop offset="0%" stop-color="#C9A84C"/>
+          <stop offset="100%" stop-color="#9B2335" stop-opacity="0.7"/>
+        </linearGradient>
+        <linearGradient id="wingBR" x1="66" y1="55" x2="40" y2="76">
+          <stop offset="0%" stop-color="#C9A84C"/>
+          <stop offset="100%" stop-color="#2E6B3E" stop-opacity="0.7"/>
+        </linearGradient>
+        <linearGradient id="goldBody" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#F0D080"/>
+          <stop offset="100%" stop-color="#8B6914"/>
+        </linearGradient>
+        <radialGradient id="gemGrad">
+          <stop offset="0%" stop-color="#FFF5CC"/>
+          <stop offset="100%" stop-color="#C9A84C"/>
+        </radialGradient>
+      </defs>
+    </svg>
+    <div class="brand-name">Mana Vastra</div>
+    <div class="tagline">Premium Ethnic Wear</div>
+  </div>
+
+  <div class="header-right">
+    <a href="https://instagram.com/manavastraofficial" target="_blank" class="social-icon" aria-label="Instagram">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+    </a>
+    <a href="https://facebook.com/manavastraofficial" target="_blank" class="social-icon" aria-label="Facebook">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    </a>
+    <a href="https://wa.me/917892106868" target="_blank" class="social-icon" style="color:#25D366; border-color:rgba(37,211,102,0.3)" aria-label="WhatsApp">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- MENU OVERLAY -->
+<div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+<!-- MENU DRAWER -->
+<div class="menu-drawer" id="menuDrawer">
+  <div class="menu-header-label">Collections</div>
+  <button class="menu-item active" id="menu-All" onclick="filterCategory('All')"><span class="menu-dot"></span>All Sarees</button>
+  <button class="menu-item" id="menu-Silk" onclick="filterCategory('Silk')"><span class="menu-dot"></span>Silk Saree</button>
+  <button class="menu-item" id="menu-Cotton" onclick="filterCategory('Cotton')"><span class="menu-dot"></span>Cotton Saree</button>
+  <button class="menu-item" id="menu-Designer" onclick="filterCategory('Designer')"><span class="menu-dot"></span>Designer Saree</button>
+  <button class="menu-item" id="menu-Fancy" onclick="filterCategory('Fancy')"><span class="menu-dot"></span>Fancy Saree</button>
+  <button class="menu-item" id="menu-Ilkal" onclick="filterCategory('Ilkal')"><span class="menu-dot"></span>Ilkal Saree</button>
+  <button class="menu-item" id="menu-Banarasi" onclick="filterCategory('Banarasi')"><span class="menu-dot"></span>Banarasi Saree</button>
+  <button class="menu-item" id="menu-Daily" onclick="filterCategory('Daily')"><span class="menu-dot"></span>Daily Wear Saree</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-ornament animate-fade-up">
+    <div class="ornament-line"></div>
+    <div class="ornament-diamond"></div>
+    <div class="ornament-line right"></div>
+  </div>
+  <p class="hero-subtitle animate-fade-up delay-1">Since generations of elegance</p>
+  <h1 class="hero-title shimmer-text animate-fade-up delay-2">Mana Vastra</h1>
+  <p class="hero-tagline animate-fade-up delay-3">Where Tradition Meets Grace</p>
+  <div class="hero-cta animate-fade-up delay-4">
+    <button class="btn-primary" onclick="document.getElementById('collections').scrollIntoView({behavior:'smooth'})">Explore Collections</button>
+    <a href="https://wa.me/917892106868" target="_blank" class="btn-secondary">Order on WhatsApp</a>
+  </div>
+</section>
+
+<!-- ORDER BANNER -->
+<div class="order-banner">
+  <div class="order-banner-title">📢 HOW TO ORDER</div>
+  <div class="order-highlight">
+    DM on WhatsApp <strong>7892106868</strong> with the Saree Code
+  </div>
+  <div class="order-rules">
+    <div class="order-rule"><span class="x-icon">✗</span> No Phone Calls Accepted</div>
+    <div class="order-rule"><span class="x-icon">✗</span> No DM on Instagram / Facebook</div>
+    <div class="order-rule"><span class="x-icon">✗</span> No Cash on Delivery &nbsp;|&nbsp; No Returns Policy</div>
+  </div>
+</div>
+
+<!-- COLLECTIONS -->
+<section class="section" id="collections">
+  <div class="section-header animate-fade-up">
+    <span class="section-label">Our Curated</span>
+    <h2 class="section-title" id="collectionTitle">All Collections</h2>
+    <div class="section-divider">
+      <div class="divider-line"></div>
+      <span class="divider-gem">✦</span>
+      <div class="divider-line right"></div>
+    </div>
+  </div>
+
+  <div class="category-filter">
+    <button class="cat-btn active" id="cat-All" onclick="filterCategory('All')">All</button>
+    <button class="cat-btn" id="cat-Silk" onclick="filterCategory('Silk')">Silk</button>
+    <button class="cat-btn" id="cat-Cotton" onclick="filterCategory('Cotton')">Cotton</button>
+    <button class="cat-btn" id="cat-Designer" onclick="filterCategory('Designer')">Designer</button>
+    <button class="cat-btn" id="cat-Fancy" onclick="filterCategory('Fancy')">Fancy</button>
+    <button class="cat-btn" id="cat-Ilkal" onclick="filterCategory('Ilkal')">Ilkal</button>
+    <button class="cat-btn" id="cat-Banarasi" onclick="filterCategory('Banarasi')">Banarasi</button>
+    <button class="cat-btn" id="cat-Daily" onclick="filterCategory('Daily')">Daily Wear</button>
+  </div>
+
+  <div class="saree-grid" id="sareeGrid"></div>
+</section>
+
+<!-- ADDRESS -->
+<div class="address-section">
+  <div class="section-header animate-fade-up" style="margin-bottom:40px">
+    <span class="section-label">Find Us</span>
+    <h2 class="section-title">Visit Our Store</h2>
+    <div class="section-divider">
+      <div class="divider-line"></div>
+      <span class="divider-gem">✦</span>
+      <div class="divider-line right"></div>
+    </div>
+  </div>
+  <div class="address-grid">
+    <div class="address-card">
+      <div class="address-label">📍 Our Address</div>
+      <div class="address-text">
+        Mana Vastra<br/>
+        5th Cross, TUDA Layout<br/>
+        80 Feet Road, Sira Gate<br/>
+        Tumkur – 572106
+      </div>
+      <a href="https://maps.google.com/?q=Sira+Gate+80+Feet+Road+Tumkur+Karnataka" target="_blank" class="view-map-btn">
+        📍 View on Google Maps
+      </a>
+      <div class="address-label" style="margin-top:16px">📞 Contact Us</div>
+      <div class="contact-list">
+        <a href="https://wa.me/917892106868" target="_blank" class="contact-item">
+          <div class="contact-icon" style="color:#25D366; border-color:rgba(37,211,102,0.3)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </div>
+          7892106868 (WhatsApp Only)
+        </a>
+        <a href="mailto:manavastraofficial@gmail.com" class="contact-item">
+          <div class="contact-icon" style="color:var(--gold); border-color:rgba(201,168,76,0.3)">✉</div>
+          manavastraofficial@gmail.com
+        </a>
+        <a href="https://instagram.com/manavastraofficial" target="_blank" class="contact-item">
+          <div class="contact-icon" style="color:#E1306C; border-color:rgba(225,48,108,0.3)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </div>
+          @manavastraofficial
+        </a>
+        <a href="https://facebook.com/manavastraofficial" target="_blank" class="contact-item">
+          <div class="contact-icon" style="color:#1877F2; border-color:rgba(24,119,242,0.3)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+          Mana Vastra
+        </a>
+      </div>
+    </div>
+    <div class="address-card">
+      <div class="address-label">🗺 Location</div>
+      <div class="map-embed">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3879.5!2d77.1025!3d13.3400!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDIwJzI0LjAiTiA3N8KwMDYnMDkuMCJF!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
+          width="100%" height="100%"
+          style="border:0"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Mana Vastra Location">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">Mana Vastra</div>
+  <div class="footer-copy">© 2025 Mana Vastra. All rights reserved. &nbsp;|&nbsp; Sira Gate, Tumkur</div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/917892106868" target="_blank" class="wa-float" aria-label="WhatsApp us">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- ORDER MODAL -->
+<div class="modal-backdrop" id="orderModal">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Order This Saree</div>
+    <div class="modal-saree-name" id="modalSareeName">—</div>
+    <div class="modal-info-row"><span>Type</span><span id="modalType">—</span></div>
+    <div class="modal-info-row"><span>Price</span><span id="modalPrice">—</span></div>
+    <div class="modal-info-row"><span>Saree Code</span><span id="modalCode">—</span></div>
+    <div class="modal-instruction">
+      <strong>📱 How to Order</strong>
+      Send this Saree Code to <strong>7892106868</strong> on WhatsApp to place your order.
+      <br/><small style="color:var(--text-dim);display:block;margin-top:6px">No calls · No COD · No Returns</small>
+    </div>
+    <a id="modalWaBtn" href="#" target="_blank" class="modal-wa-btn">ORDER ON WHATSAPP →</a>
+  </div>
+</div>
+
+<script>
+  // ─── DATA ──────────────────────────────────────────────
+  const sarees = [
+    // SILK
+    { id:'MV1001', name:'Kanjivaram Classic', type:'Silk', category:'Silk', price:4999, color:'#8B1A1A' },
+    { id:'MV1002', name:'Pure Mysore Silk', type:'Silk', category:'Silk', price:3799, color:'#4A235A' },
+    { id:'MV1003', name:'South Silk Zari', type:'Silk', category:'Silk', price:5499, color:'#1A3A5C' },
+    // COTTON
+    { id:'MV2001', name:'Handloom Cotton', type:'Cotton', category:'Cotton', price:999, color:'#2C5F2E' },
+    { id:'MV2002', name:'Tant Bengal Cotton', type:'Cotton', category:'Cotton', price:1299, color:'#5C4827' },
+    { id:'MV2003', name:'Venkatagiri Cotton', type:'Cotton', category:'Cotton', price:1499, color:'#1A4A6B' },
+    // DESIGNER
+    { id:'MV3001', name:'Embroidered Fusion', type:'Designer', category:'Designer', price:3299, color:'#7B1E4A' },
+    { id:'MV3002', name:'Digital Print Chic', type:'Designer', category:'Designer', price:2499, color:'#1E4A5C' },
+    // FANCY
+    { id:'MV4001', name:'Organza Glam', type:'Fancy', category:'Fancy', price:2799, color:'#5A1A5A' },
+    { id:'MV4002', name:'Net Party Wear', type:'Fancy', category:'Fancy', price:1999, color:'#8B4513' },
+    // ILKAL
+    { id:'MV5001', name:'Traditional Ilkal', type:'Ilkal', category:'Ilkal', price:1799, color:'#4A2C0A' },
+    { id:'MV5002', name:'Ilkal with Kasuti', type:'Ilkal', category:'Ilkal', price:2199, color:'#0A3A4A' },
+    // BANARASI
+    { id:'MV6001', name:'Banarasi Brocade', type:'Banarasi', category:'Banarasi', price:6499, color:'#6B1A1A' },
+    { id:'MV6002', name:'Pure Georgette Banarasi', type:'Banarasi', category:'Banarasi', price:4299, color:'#1A1A6B' },
+    // DAILY
+    { id:'MV7001', name:'Morning Breeze Daily', type:'Daily Wear', category:'Daily', price:699, color:'#2E5A2E' },
+    { id:'MV7002', name:'Everyday Comfort', type:'Daily Wear', category:'Daily', price:549, color:'#3A2A1A' },
+    { id:'MV7003', name:'Office Drape', type:'Daily Wear', category:'Daily', price:799, color:'#1A2A4A' },
+  ];
+
+  // Decorative color patterns for placeholder cards
+  const patterns = [
+    ['#9B2335','#C9A84C'], ['#2E6B3E','#C9A84C'], ['#4A235A','#F0D080'],
+    ['#1A3A5C','#C9A84C'], ['#6B1A1A','#F0D080'], ['#0A3A4A','#C9A84C'],
+    ['#5A1A5A','#F0D080'], ['#3A2A1A','#C9A84C'],
+  ];
+
+  let activeCategory = 'All';
+
+  function renderGrid(category) {
+    const grid = document.getElementById('sareeGrid');
+    const filtered = category === 'All' ? sarees : sarees.filter(s => s.category === category);
+    const title = document.getElementById('collectionTitle');
+
+    const labels = {
+      All:'All Collections', Silk:'Silk Sarees', Cotton:'Cotton Sarees',
+      Designer:'Designer Sarees', Fancy:'Fancy Sarees', Ilkal:'Ilkal Sarees',
+      Banarasi:'Banarasi Sarees', Daily:'Daily Wear Sarees'
+    };
+    title.textContent = labels[category] || 'All Collections';
+
+    if (!filtered.length) {
+      grid.innerHTML = '<div class="no-results">No sarees found in this category.</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map((s, i) => {
+      const p = patterns[i % patterns.length];
+      const msgText = `Hi! I want to order *${s.name}* (Code: ${s.id}) - ₹${s.price.toLocaleString('en-IN')}`;
+      return `
+        <div class="saree-card" onclick="openModal('${s.id}')">
+          <div class="saree-img-wrap">
+            <div class="saree-placeholder">
+              <svg width="100%" height="100%" viewBox="0 0 240 320" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="bg${i}" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="${s.color}" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#0A0705"/>
+                  </linearGradient>
+                  <pattern id="pat${i}" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+                    <path d="M15 2 L28 15 L15 28 L2 15 Z" fill="none" stroke="${p[1]}" stroke-width="0.5" opacity="0.3"/>
+                  </pattern>
+                </defs>
+                <rect width="240" height="320" fill="url(#bg${i})"/>
+                <rect width="240" height="320" fill="url(#pat${i})"/>
+                <!-- Saree drape silhouette -->
+                <path d="M60 40 Q80 60 70 120 Q60 180 80 240 Q100 280 120 300 Q90 285 70 250 Q50 210 55 170 Q60 130 45 80 Z" fill="${p[1]}" opacity="0.15"/>
+                <path d="M120 20 Q160 50 155 110 Q150 170 170 220 Q185 260 180 300 Q160 280 155 240 Q145 200 145 160 Q145 110 130 60 Z" fill="${p[1]}" opacity="0.1"/>
+                <!-- Border decoration -->
+                <rect x="10" y="10" width="220" height="300" fill="none" stroke="${p[1]}" stroke-width="1" opacity="0.3"/>
+                <rect x="16" y="16" width="208" height="288" fill="none" stroke="${p[1]}" stroke-width="0.5" opacity="0.2"/>
+                <!-- Center motif -->
+                <g transform="translate(120,160)">
+                  <path d="M0,-20 C8,-8 20,0 20,0 C8,8 0,20 0,20 C-8,8 -20,0 -20,0 C-8,-8 0,-20 0,-20Z" fill="${p[1]}" opacity="0.5"/>
+                  <circle cx="0" cy="0" r="5" fill="${p[1]}" opacity="0.7"/>
+                </g>
+                <!-- Top pattern row -->
+                <g opacity="0.4">
+                  ${[30,70,110,150,190,210].map(x => `<circle cx="${x}" cy="35" r="2" fill="${p[1]}"/>`).join('')}
+                </g>
+                <!-- Bottom border -->
+                <rect x="10" y="270" width="220" height="20" fill="${p[1]}" opacity="0.15"/>
+                <path d="M10 270 Q60 260 120 270 Q180 280 230 270 L230 290 Q180 285 120 280 Q60 275 10 290 Z" fill="${p[1]}" opacity="0.2"/>
+              </svg>
+            </div>
+            <div class="saree-badge">${s.type}</div>
+          </div>
+          <div class="saree-info">
+            <div class="saree-type">${s.type}</div>
+            <div class="saree-name">${s.name}</div>
+            <div class="saree-meta">
+              <div class="saree-price">₹${s.price.toLocaleString('en-IN')}</div>
+              <div class="saree-code">${s.id}</div>
+            </div>
+            <button class="saree-order-btn" onclick="event.stopPropagation(); openModal('${s.id}')">Order Now</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterCategory(cat) {
+    activeCategory = cat;
+
+    // Update filter buttons
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    const catEl = document.getElementById('cat-' + cat);
+    if (catEl) catEl.classList.add('active');
+
+    // Update menu items
+    document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+    const menuEl = document.getElementById('menu-' + cat);
+    if (menuEl) menuEl.classList.add('active');
+
+    renderGrid(cat);
+    closeMenu();
+
+    // Scroll to collections
+    setTimeout(() => {
+      document.getElementById('collections').scrollIntoView({ behavior: 'smooth' });
+    }, 200);
+  }
+
+  // ─── MENU ──────────────────────────────────────────────
+  function toggleMenu() {
+    const btn = document.getElementById('hamburgerBtn');
+    const drawer = document.getElementById('menuDrawer');
+    const overlay = document.getElementById('menuOverlay');
+    btn.classList.toggle('open');
+    drawer.classList.toggle('open');
+    overlay.classList.toggle('open');
+  }
+
+  function closeMenu() {
+    document.getElementById('hamburgerBtn').classList.remove('open');
+    document.getElementById('menuDrawer').classList.remove('open');
+    document.getElementById('menuOverlay').classList.remove('open');
+  }
+
+  // ─── MODAL ─────────────────────────────────────────────
+  function openModal(id) {
+    const s = sarees.find(s => s.id === id);
+    if (!s) return;
+    document.getElementById('modalSareeName').textContent = s.name;
+    document.getElementById('modalType').textContent = s.type;
+    document.getElementById('modalPrice').textContent = '₹' + s.price.toLocaleString('en-IN');
+    document.getElementById('modalCode').textContent = s.id;
+    const msg = encodeURIComponent(`Hi! I want to order *${s.name}* (Code: ${s.id}) – ₹${s.price.toLocaleString('en-IN')}`);
+    document.getElementById('modalWaBtn').href = `https://wa.me/917892106868?text=${msg}`;
+    document.getElementById('orderModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('orderModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('orderModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeMenu(); } });
+
+  // ─── INIT ──────────────────────────────────────────────
+  renderGrid('All');
+
+  // Intersection observer for subtle fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.animate-fade-up').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
