@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { resolveImage } from "@/lib/utils";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+const API_URL = import.meta.env.VITE_API_URL || "https://mana-vastra-backend-production.up.railway.app/api";
 
 export default function SareeGrid() {
   const [sarees, setSarees] = useState([]);

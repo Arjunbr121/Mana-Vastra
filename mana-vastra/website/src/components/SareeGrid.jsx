@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CATEGORIES } from "../data/sarees";
 import SareeCard from "./SareeCard";
 
-const API = `${import.meta.env.VITE_API_URL || "http://localhost:5001/api"}`;
+const API = `${import.meta.env.VITE_API_URL || "https://mana-vastra-backend-production.up.railway.app/api"}`;
 
-const BACKEND = import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:5001";
+const BACKEND = import.meta.env.VITE_API_URL?.replace("/api", "") || "https://mana-vastra-backend-production.up.railway.app";
 
 const resolveImage = (url) => {
   if (!url) return null;

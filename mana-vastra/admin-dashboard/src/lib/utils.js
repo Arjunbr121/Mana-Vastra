@@ -17,7 +17,7 @@ export const formatDate = (value) =>
     day: "numeric",
   });
 
-const BACKEND = (import.meta.env.VITE_API_URL || "http://localhost:5001/api").replace("/api", "");
+const BACKEND = (import.meta.env.VITE_API_URL || "https://mana-vastra-backend-production.up.railway.app/api").replace("/api", "");
 
 export const resolveImage = (url) => {
   if (!url) return null;
