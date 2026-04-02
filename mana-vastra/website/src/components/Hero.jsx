@@ -20,18 +20,9 @@ export default function Hero({ onExplore }) {
     >
       {/* Ornament */}
       <motion.div {...fadeUp(0)} className="flex items-center gap-3 mb-5">
-        <div
-          className="w-16 h-px"
-          style={{ background: "linear-gradient(90deg, transparent, #C9A84C)" }}
-        />
-        <div
-          className="w-1.5 h-1.5 rotate-45"
-          style={{ background: "#C9A84C" }}
-        />
-        <div
-          className="w-16 h-px"
-          style={{ background: "linear-gradient(90deg, #C9A84C, transparent)" }}
-        />
+        <div className="w-16 h-px" style={{ background: "linear-gradient(90deg, transparent, #C9A84C)" }} />
+        <div className="w-1.5 h-1.5 rotate-45" style={{ background: "#C9A84C" }} />
+        <div className="w-16 h-px" style={{ background: "linear-gradient(90deg, #C9A84C, transparent)" }} />
       </motion.div>
 
       <motion.p
@@ -47,33 +38,28 @@ export default function Hero({ onExplore }) {
         className="shimmer-text font-cinzel font-black leading-tight mb-1"
         style={{ fontSize: "clamp(32px, 9vw, 72px)" }}
       >
-        Mana Vastra
+        ಮನ ವಸ್ತ್ರ
+
       </motion.h1>
 
-      <motion.p
-        {...fadeUp(0.28)}
-        className="mb-3"
-        style={{ fontSize: "clamp(16px, 4vw, 32px)", color: "#C9A84C", fontFamily: "serif" }}
+            <motion.h2
+        {...fadeUp(0.2)}
+        className="shimmer-text font-cinzel font-black leading-tight mb-1"
+        style={{ fontSize: "clamp(32px, 9vw, 72px)" }}
       >
-        ಮನ ವಸ್ತ್ರ
-      </motion.p>
+        Mana Vastra
+      </motion.h2>
+
 
       <motion.p
         {...fadeUp(0.35)}
         className="font-cormorant italic mb-12"
-        style={{
-          fontSize: "clamp(15px, 3vw, 22px)",
-          color: "#D4C49A",
-          letterSpacing: "0.08em",
-        }}
+        style={{ fontSize: "clamp(15px, 3vw, 22px)", color: "#D4C49A", letterSpacing: "0.08em" }}
       >
         Where Tradition Meets Grace
       </motion.p>
 
-      <motion.div
-        {...fadeUp(0.5)}
-        className="flex gap-4 flex-wrap justify-center"
-      >
+      <motion.div {...fadeUp(0.5)} className="flex gap-4 flex-wrap justify-center">
         <motion.button
           whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(201,168,76,0.3)" }}
           whileTap={{ scale: 0.97 }}
@@ -82,8 +68,7 @@ export default function Hero({ onExplore }) {
           style={{
             background: "linear-gradient(135deg, #8B6914, #C9A84C, #8B6914)",
             color: "#0A0705",
-            clipPath:
-              "polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)",
+            clipPath: "polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)",
           }}
         >
           Explore Collections
@@ -99,8 +84,7 @@ export default function Hero({ onExplore }) {
           style={{
             color: "#C9A84C",
             borderColor: "#C9A84C",
-            clipPath:
-              "polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)",
+            clipPath: "polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)",
           }}
         >
           Order on WhatsApp

@@ -161,7 +161,7 @@ export default function AddressSection() {
               manavastraofficial@gmail.com
             </ContactItem>
             <ContactItem
-              href="https://instagram.com/manavastraofficial"
+              href="https://www.instagram.com/manavastra_7892106868?igsh=N2c5OXh6djl2eG1n"
               icon={<IgIcon />}
               color="#E1306C"
               borderColor="rgba(225,48,108,0.3)"
@@ -169,7 +169,7 @@ export default function AddressSection() {
               @manavastraofficial
             </ContactItem>
             <ContactItem
-              href="https://facebook.com/manavastraofficial"
+              href="https://www.facebook.com/share/173A7q4yJt/?mibextid=wwXIfr"
               icon={<FbIcon />}
               color="#1877F2"
               borderColor="rgba(24,119,242,0.3)"

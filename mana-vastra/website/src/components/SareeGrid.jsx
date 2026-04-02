@@ -16,9 +16,10 @@ const resolveImage = (url) => {
 const mapSaree = (s) => ({
   id: s.sku || s._id,
   name: s.name,
-  type: s.category,   // e.g. "Silk Saree" — matches what's in the DB
+  type: s.category,
   category: s.category,
   price: s.price,
+  salePrice: s.salePrice || null,
   image: resolveImage(s.images?.[0]?.url),
   color: s.color || "#8B1A1A",
 });
@@ -110,10 +111,7 @@ export default function SareeGrid({ activeCategory, onOrder }) {
 
       {/* Grid */}
       {!loading && !error && (
-        <div
-          className="grid gap-4 sm:gap-6 max-w-6xl mx-auto"
-          style={{ gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))" }}
-        >
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 max-w-6xl mx-auto">
           <AnimatePresence mode="popLayout">
             {sarees.map((saree, i) => (
               <SareeCard key={saree.id} saree={saree} index={i} onOrder={onOrder} />

@@ -46,7 +46,6 @@ export default function OrderBanner() {
         <div className="flex flex-col gap-1.5 items-center">
           {[
             "No Phone Calls Accepted",
-            "No DM on Instagram / Facebook",
             "No Cash on Delivery  |  No Returns Policy",
           ].map((rule, i) => (
             <div

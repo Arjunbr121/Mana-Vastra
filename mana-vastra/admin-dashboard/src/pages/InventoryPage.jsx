@@ -174,7 +174,14 @@ export default function InventoryPage() {
                       </div>
                     </td>
                     <td className="px-4 py-4">{item.category}</td>
-                    <td className="px-4 py-4">{formatCurrency(item.salePrice || item.price)}</td>
+                    <td className="px-4 py-4">
+                      <div className="flex flex-col">
+                        <span>{formatCurrency(item.price)}</span>
+                        {item.salePrice && (
+                          <span className="text-xs line-through text-muted">{formatCurrency(item.salePrice)}</span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-4 py-4">
                       {user?.role === "admin" ? (
                         <div className="flex items-center gap-2">

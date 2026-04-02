@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import ButterflyLogo from "./ButterflyLogo";
+import appLogo from "../app_logo.png";
 
 const InstagramIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -34,48 +34,34 @@ export default function Header({ menuOpen, onMenuToggle }) {
       }}
     >
       {/* Left – Hamburger */}
-      <div className="flex items-center min-w-[60px]">{""}</div>
+      <div className="hidden md:block flex items-center min-w-[60px]">{""}</div>
 
       {/* Center – Logo */}
-      <div className="flex flex-col items-center gap-0.5">
-        <ButterflyLogo size={38} className="float-anim" />
-        <span
-          className="font-cinzel font-bold tracking-widest text-sm leading-none"
+      <div className="flex flex-col items-center">
+        <img
+          src={appLogo}
+          alt="Mana Vastra"
           style={{
-            background:
-              "linear-gradient(135deg, #8B6914 0%, #F0D080 50%, #8B6914 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
+            width: 48,
+            height: 48,
+            borderRadius: "50%",
+            objectFit: "cover",
+            border: "1px solid rgba(201,168,76,0.4)",
           }}
-        >
-          Mana Vastra
-        </span>
-        <span
-          className="text-[11px] leading-none"
-          style={{ color: "#C9A84C", fontFamily: "serif" }}
-        >
-          ಮನ ವಸ್ತ್ರ
-        </span>
-        <span
-          className="font-cormorant italic text-[9px] tracking-[0.2em] uppercase"
-          style={{ color: "#A08858" }}
-        >
-          Premium Ethnic Wear
-        </span>
+        />
       </div>
 
       {/* Right – Social icons */}
       <div className="flex items-center gap-2 min-w-[60px] justify-end">
         {[
           {
-            href: "https://instagram.com/manavastraofficial",
+            href: "https://www.instagram.com/manavastra_7892106868?igsh=N2c5OXh6djl2eG1n",
             icon: <InstagramIcon />,
             label: "Instagram",
             color: "#E1306C",
           },
           {
-            href: "https://facebook.com/manavastraofficial",
+            href: "https://www.facebook.com/share/173A7q4yJt/?mibextid=wwXIfr",
             icon: <FacebookIcon />,
             label: "Facebook",
             color: "#1877F2",

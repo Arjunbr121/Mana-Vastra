@@ -41,8 +41,8 @@ export default function App() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<OverviewPage />} />
-        <Route path="inventory" element={<InventoryPage />} />
+        <Route index element={<InventoryPage />} />
+        <Route path="overview" element={<OverviewPage />} />
         <Route path="users" element={<UsersPage />} />
       </Route>
     </Routes>

@@ -5,8 +5,8 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { to: "/", label: "Overview", icon: LayoutGrid },
-  { to: "/inventory", label: "Inventory", icon: Package },
+  { to: "/", label: "Inventory", icon: Package },
+  { to: "/overview", label: "Overview", icon: LayoutGrid },
 ];
 
 export default function DashboardLayout() {
