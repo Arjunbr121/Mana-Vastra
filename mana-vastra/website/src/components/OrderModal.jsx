@@ -7,7 +7,7 @@ export default function OrderModal({ saree, onClose }) {
   const lead = (() => { try { return JSON.parse(localStorage.getItem("mv_lead")) || {}; } catch { return {}; } })();
 
   const waMsg = encodeURIComponent(
-    `Hi! I am *${lead.name || "a customer"}* from *${lead.city || "—"}* (📞 ${lead.phone || "—"}).\n\nI would like to order the *${saree.name}* (Code: ${saree.id}) priced at ${formatPrice(saree.price)}.\n\nKindly assist me with the order. Thank you! 🙏`,
+    `Hi! I am *${lead.name || "a customer"}* from *${lead.city || "—"}* (📞 ${lead.phone || "—"}).\n\nI would like to order the *${saree.name}* (Code: ${saree.id}) priced at ${formatPrice(saree.salePrice || saree.price)}.\n\nKindly assist me with the order. Thank you! 🙏`,
   );
 
   return (
@@ -62,7 +62,8 @@ export default function OrderModal({ saree, onClose }) {
 
           {[
             ["Type", saree.type],
-            ["Price", formatPrice(saree.price)],
+            ["Selling Price", formatPrice(saree.salePrice || saree.price)],
+            ...(saree.salePrice ? [["MRP", formatPrice(saree.price)]] : []),
             ["Saree Code", saree.id],
           ].map(([label, value]) => (
             <div

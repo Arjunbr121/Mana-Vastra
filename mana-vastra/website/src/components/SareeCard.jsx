@@ -27,7 +27,7 @@ function SareePlaceholder({ saree, index }) {
 
 export default function SareeCard({ saree, index, onOrder }) {
   const discount = saree.salePrice
-    ? Math.round(((saree.salePrice - saree.price) / saree.salePrice) * 100)
+    ? Math.round(((saree.price - saree.salePrice) / saree.price) * 100)
     : null;
 
   return (
@@ -80,11 +80,11 @@ export default function SareeCard({ saree, index, onOrder }) {
         {/* Price row */}
         <div className="flex items-center gap-1.5 flex-wrap mb-2">
           <span className="font-garamond text-base font-semibold" style={{ color: "#F0D080" }}>
-            {formatPrice(saree.price)}
+            {formatPrice(saree.salePrice || saree.price)}
           </span>
           {saree.salePrice && (
             <span className="font-garamond text-xs line-through" style={{ color: "#5A4A2A" }}>
-              {formatPrice(saree.salePrice)}
+              {formatPrice(saree.price)}
             </span>
           )}
         </div>

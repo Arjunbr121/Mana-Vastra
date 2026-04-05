@@ -150,9 +150,10 @@ export default function InventoryPage() {
               <thead className="border-b border-border text-muted">
                 <tr>
                   <th className="px-4 py-3 font-medium">Piece</th>
+                  <th className="px-4 py-3 font-medium">SKU</th>
                   <th className="px-4 py-3 font-medium">Category</th>
                   <th className="px-4 py-3 font-medium">MRP</th>
-                  <th className="px-4 py-3 font-medium">Sale Price</th>
+                  <th className="px-4 py-3 font-medium">Sales Price</th>
                   <th className="px-4 py-3 font-medium">Stock</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                   {user?.role === "admin" ? <th className="px-4 py-3 font-medium">Actions</th> : null}
@@ -168,21 +169,19 @@ export default function InventoryPage() {
                           alt={item.name}
                           className="h-14 w-14 rounded-2xl object-cover"
                         />
-                        <div>
-                          <p className="font-medium text-foreground">{item.name}</p>
-                          <p className="text-xs text-muted">{item.sku || "No SKU"}</p>
-                        </div>
                       </div>
                     </td>
+                    <td className="px-4 py-4 text-xs text-muted">{item.sku || "—"}</td>
                     <td className="px-4 py-4">{item.category}</td>
-                    <td className="px-4 py-4">{formatCurrency(item.salePrice || "—")}</td>
-                    <td className="px-4 py-4">
+
+                                        <td className="px-4 py-4">
                       {item.salePrice ? (
                         <span className="text-primary font-medium">{formatCurrency(item.price)}</span>
                       ) : (
                         <span>{formatCurrency(item.price)}</span>
                       )}
                     </td>
+                    <td className="px-4 py-4">{item.salePrice ? formatCurrency(item.salePrice) : "—"}</td>
                     <td className="px-4 py-4">
                       {user?.role === "admin" ? (
                         <div className="flex items-center gap-2">
@@ -251,7 +250,7 @@ export default function InventoryPage() {
                 ))}
                 {!items.length && (
                   <tr>
-                    <td colSpan={7} className="px-4 py-12 text-center text-sm text-muted">
+                    <td colSpan={8} className="px-4 py-12 text-center text-sm text-muted">
                       No sarees found.
                     </td>
                   </tr>
