@@ -166,7 +166,7 @@ export default function AddressSection() {
               color="#E1306C"
               borderColor="rgba(225,48,108,0.3)"
             >
-              @manavastraofficial
+              @manavastra_7892106868
             </ContactItem>
             <ContactItem
               href="https://www.facebook.com/share/173A7q4yJt/?mibextid=wwXIfr"

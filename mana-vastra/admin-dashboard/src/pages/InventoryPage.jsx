@@ -151,7 +151,8 @@ export default function InventoryPage() {
                 <tr>
                   <th className="px-4 py-3 font-medium">Piece</th>
                   <th className="px-4 py-3 font-medium">Category</th>
-                  <th className="px-4 py-3 font-medium">Price</th>
+                  <th className="px-4 py-3 font-medium">MRP</th>
+                  <th className="px-4 py-3 font-medium">Sale Price</th>
                   <th className="px-4 py-3 font-medium">Stock</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                   {user?.role === "admin" ? <th className="px-4 py-3 font-medium">Actions</th> : null}
@@ -174,13 +175,13 @@ export default function InventoryPage() {
                       </div>
                     </td>
                     <td className="px-4 py-4">{item.category}</td>
+                    <td className="px-4 py-4">{formatCurrency(item.salePrice || "—")}</td>
                     <td className="px-4 py-4">
-                      <div className="flex flex-col">
+                      {item.salePrice ? (
+                        <span className="text-primary font-medium">{formatCurrency(item.price)}</span>
+                      ) : (
                         <span>{formatCurrency(item.price)}</span>
-                        {item.salePrice && (
-                          <span className="text-xs line-through text-muted">{formatCurrency(item.salePrice)}</span>
-                        )}
-                      </div>
+                      )}
                     </td>
                     <td className="px-4 py-4">
                       {user?.role === "admin" ? (
@@ -250,7 +251,7 @@ export default function InventoryPage() {
                 ))}
                 {!items.length && (
                   <tr>
-                    <td colSpan={6} className="px-4 py-12 text-center text-sm text-muted">
+                    <td colSpan={7} className="px-4 py-12 text-center text-sm text-muted">
                       No sarees found.
                     </td>
                   </tr>
