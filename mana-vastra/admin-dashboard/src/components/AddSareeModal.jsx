@@ -118,7 +118,7 @@ export default function AddSareeModal({ open, onOpenChange, onSaved, initialData
           <Input placeholder="Fabric" value={form.fabric} onChange={(e) => setValue("fabric", e.target.value)} />
           <Input placeholder="Color" value={form.color} onChange={(e) => setValue("color", e.target.value)} />
           <Input placeholder="Occasion" value={form.occasion} onChange={(e) => setValue("occasion", e.target.value)} />
-          <Input type="number" placeholder="Price" value={form.price} onChange={(e) => setValue("price", e.target.value)} required />
+          <Input type="number" placeholder="MRP" value={form.price} onChange={(e) => setValue("price", e.target.value)} required />
           <Input type="number" placeholder="Sale price" value={form.salePrice} onChange={(e) => setValue("salePrice", e.target.value)} />
           <Input type="number" placeholder="Stock" value={form.stock} onChange={(e) => setValue("stock", e.target.value)} />
           <Input placeholder="Tags (comma separated)" value={form.tags} onChange={(e) => setValue("tags", e.target.value)} />
