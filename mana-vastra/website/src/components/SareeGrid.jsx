@@ -9,6 +9,9 @@ const BACKEND = import.meta.env.VITE_API_URL?.replace("/api", "") || "https://ma
 
 const resolveImage = (url) => {
   if (!url) return null;
+  // Convert Google Drive share link to direct image URL
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if (driveMatch) return `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
   if (url.startsWith("http")) return url;
   return `${BACKEND}${url}`;
 };

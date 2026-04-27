@@ -21,6 +21,8 @@ const BACKEND = (import.meta.env.VITE_API_URL || "https://mana-vastra-backend-pr
 
 export const resolveImage = (url) => {
   if (!url) return null;
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if (driveMatch) return `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
   if (url.startsWith("http")) return url;
   return `${BACKEND}${url}`;
 };
