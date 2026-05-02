@@ -16,7 +16,13 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174"].filter(Boolean),
+    origin: [
+      process.env.CLIENT_URL,
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://mana-vastra-website.vercel.app",
+      "https://mana-vastra-admin.vercel.app",
+    ].filter(Boolean),
     credentials: true,
   })
 );
